@@ -22,7 +22,7 @@ The following **extensions** are implemented:
 
 You can download the APK file for this application using the link below:
 
-[Download Calculator APK](https://github.com/blackhat955/CalculatorUsingJetpack/blob/master/app-release_jetpack.apk)
+[Download Calculator APK](https://github.com/blackhat955/CalculatorUsingXml/blob/master/app-release_jetpack.apk)
 
 
 ## Video Walkthrough
