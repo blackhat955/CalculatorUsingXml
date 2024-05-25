@@ -3,7 +3,7 @@
     <string name="clear_symbol">C</string>
     <string name="parentheses_symbol">+/-</string>
     <string name="percent_symbol">%</string>
-    <string name="multiply_symbol">*</string>
+    <string name="multiply_symbol">x</string>
     <string name="subtraction_symbol">-</string>
     <string name="division_symbol">/</string>
     <string name="plus_symbol">+</string>

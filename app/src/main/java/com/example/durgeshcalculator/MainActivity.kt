@@ -83,6 +83,7 @@ class MainActivity : AppCompatActivity() {
 
             btPlus.setOnClickListener {
                 arithmeticClick(it)
+
             }
 
             btDivide.setOnClickListener {
@@ -94,11 +95,11 @@ class MainActivity : AppCompatActivity() {
             }
 
             btPercent.setOnClickListener {
-                notImplemented(it)
+                percentage(it)
             }
 
             btParentheses.setOnClickListener {
-                notImplemented(it)
+                toggleParentheses(it)
             }
 
 //            btBack.setOnClickListener {
@@ -114,6 +115,28 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+
+    private fun percentage(view: View) {
+        val button = view as MaterialButton
+        binding.apply {
+            val currentText = etDisplay.text.toString()
+            if (currentText.isNotEmpty() && !currentText.lastAnSameSymbol()) {
+                if (button.text.toString() == "%") {
+                    // Check if the last character is a number and not a symbol
+                    if (currentText.last().isDigit()) {
+                        // Convert the current number to a percentage
+                        val number = currentText.toDouble()
+                        val percentage = number / 100
+                        etDisplay.setText(percentage.toString())
+                    }
+                } else if (!button.text.toString().compareLast(currentText)) {
+                    type(button)
+                }
+            }
+        }
+    }
+
 
     private fun dotClick(view: View) {
         val button = view as MaterialButton
@@ -139,11 +162,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun calculate() {
         binding.apply {
-            val txt: String = etDisplay.text.toString()
+            val txt: String = operand + currentInput
             val expression: Expression = ExpressionBuilder(txt).build()
             try {
                 val result: Double = expression.evaluate()
-                etDisplay.text =  getBoldString(result.toString())
+                // Format the result to 6 decimal places
+                val formattedResult = String.format("%.6f", result).trimEnd('0').trimEnd('.')
+                etDisplay.text = getBoldString(formattedResult)
+                // Reset operand and current input after calculation
+                operand = ""
+                currentInput = formattedResult
             } catch (arithmeticException: ArithmeticException) {
                 etDisplay.text = arithmeticException.message
             } catch (illegalArgumentException: IllegalArgumentException) {
@@ -152,46 +180,35 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun clear() {
 
-        binding.etDisplay.text = ""
+    private fun clear() {
+        currentInput = ""
+        operator = null
+        operand = ""
+        binding.etDisplay.text = getBoldString("0")
     }
 
 //    private fun notImplemented(it: View) =
 //        Snackbar.make(it, "Not implemented yet!", Snackbar.LENGTH_SHORT).show()
 
-    private fun notImplemented(it: View) {
-        // Assuming it is the selected symbol
-        binding.btParentheses.text = "+/-"
-//        Snackbar.make(it, "working!", Snackbar.LENGTH_SHORT).show()
-        val symbol = "+"
+    private fun toggleParentheses(it: View) {
+        val text = binding.etDisplay.text.toString()
 
-        println("Original symbol: $symbol")
-
-        // Reverse the symbol
-        val reversedSymbol = when (symbol) {
-            "+" -> "-"
-            "-" -> "+"
-            else -> symbol // Handle other symbols if needed
-        }
-
-        println("Reversed symbol: $reversedSymbol")
-
-        // Use the reversed symbol as needed
-
-        // For demonstration, let's update the text of a TextView with the reversed symbol
-
-        val text = binding.etDisplay.text.toString().lastOrNull()
-        val sym= binding.etDisplay.text.toString()
-        if(text=='+'){
-            binding.etDisplay.text= sym.substring(0,sym.length-1)+'-'
-        }
-
-        else if(text=='-'){
-            binding.etDisplay.text=sym.substring(0,sym.length-1)+'+'
+        // Check if the text is not empty
+        if (text.isNotEmpty()) {
+            // Try to parse the text to a number
+            try {
+                val number = text.toDouble()
+                // Toggle the sign of the number
+                val toggledNumber = -number
+                // Update the display with the toggled number
+                binding.etDisplay.text = toggledNumber.toString()
+            } catch (e: NumberFormatException) {
+                // Handle the exception if the text is not a valid number
+                // Optional: Show a toast or snackbar to indicate invalid input
+            }
         }
     }
-
 
 
 
@@ -213,8 +230,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+    // this is the test to make it's working more close the iphone
+    private var currentInput = ""
+    private var operator: Char? = null
+    private var operand: String = ""
+
     private fun type(view: View) {
         val button = view as MaterialButton
-        binding.etDisplay.text = getBoldString("${binding.etDisplay.text}${button.text}")
+        val inputText = button.text.toString()
+
+        // Only handle numbers and update the display
+        if (inputText.toDoubleOrNull() != null) {
+            currentInput += inputText
+            binding.etDisplay.text = getBoldString(currentInput)
+        } else {
+            // Handle operators
+            when (inputText) {
+                "+", "-", "*", "/" -> {
+                    if (currentInput.isNotEmpty()) {
+                        operand += currentInput + inputText
+                        currentInput = ""
+                    }
+                }
+            }
+        }
     }
+
 }
