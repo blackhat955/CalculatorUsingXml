@@ -1,6 +1,6 @@
 # Calculator Using XML and define UI  (version 1)
 
-This is a simple and intuitive calculator application built using Kotlin and XML for the UI, not using Jetpack Compose. Inspired by the iPhone calculator, it supports basic arithmetic operations with a clean and minimalist user interface. The application ensures a smooth and user-friendly experience by displaying only the current number during input and performing calculations efficiently.
+This is a simple and intuitive calculator application built using Kotlin and XML for the UI design. Inspired by the iPhone calculator, it supports basic arithmetic operations with a clean and minimalist user interface. The application ensures a smooth and user-friendly experience by displaying only the current number during input and performing calculations efficiently.
 
 ## Functionality 
 
